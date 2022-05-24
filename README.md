@@ -118,7 +118,7 @@ elif adv[0] == "PGD":
     pgd.restore()  # 恢复embedding参数
 ```
 ### FGSM
-实现与PGD相似，不同的是这里2步完成，第1步主要是用uniform分布生成初始扰动，加到embedding上。这样得到扰动梯度，更新扰动，第2步真正更新模型参数。
+实现与PGD相似，不同的是这里2步完成，第1步主要是用uniform分布生成初始扰动，加到embedding上。这样得到扰动的梯度，第2步用扰动的梯度更新扰动,用于真正更新模型参数。model.zero_grad()和restore_grad()操作的原因与PGD相同。
 ```
 def attack(self, epsilon=1., alpha=0.3, emb_name='embedding', is_first_attack=False):
     # emb_name这个参数要换成你模型中embedding的参数名
@@ -155,7 +155,7 @@ elif adv[0] == "FGSM":
     fgsm.restore()  # 恢复embedding参数
 ```
 ### "Free"
-Free最大的不同是模型和扰动一起更新，所以有多次optimizer.step()操作。
+Free最大的不同是模型和扰动一起更新，所以有多次optimizer.step()操作与attack（即更新扰动）操作同步进行。
 ```
 elif adv[0] == "FREE":
     free = adv[1]
