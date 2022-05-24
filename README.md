@@ -130,11 +130,12 @@ def attack(self, epsilon=1., alpha=0.3, emb_name='embedding', is_first_attack=Fa
                 r_at.uniform_(-epsilon, epsilon)
                 param.data.add_(r_at)
                 param.data = self.project(name, param.data, epsilon)
-            norm = torch.norm(param.grad)
-            if norm != 0 and not torch.isnan(norm):
-                r_at = alpha * param.grad / norm
-                param.data.add_(r_at)
-                param.data = self.project(name, param.data, epsilon)
+            if not is_first_attack:
+                norm = torch.norm(param.grad)
+                if norm != 0 and not torch.isnan(norm):
+                    r_at = alpha * param.grad / norm
+                    param.data.add_(r_at)
+                    param.data = self.project(name, param.data, epsilon)
 ```
 ```
 elif adv[0] == "FGSM":

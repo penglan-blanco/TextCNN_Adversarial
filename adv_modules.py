@@ -84,11 +84,12 @@ class FGSM():
                     r_at.uniform_(-epsilon, epsilon)
                     param.data.add_(r_at)
                     param.data = self.project(name, param.data, epsilon)
-                norm = torch.norm(param.grad)
-                if norm != 0 and not torch.isnan(norm):
-                    r_at = alpha * param.grad / norm
-                    param.data.add_(r_at)
-                    param.data = self.project(name, param.data, epsilon)
+                if not is_first_attack:
+                    norm = torch.norm(param.grad)
+                    if norm != 0 and not torch.isnan(norm):
+                        r_at = alpha * param.grad / norm
+                        param.data.add_(r_at)
+                        param.data = self.project(name, param.data, epsilon)
 
     def restore(self, emb_name='embedding'):
         # emb_name这个参数要换成你模型中embedding的参数名
